@@ -11,17 +11,23 @@ class Node :
         self.ccw = self
         
     def place(self, number) :
+        second = self.clockwise
+        third = self.clockwise.clockwise
+        
         this = Node(number)
-        this.ccw = self.clockwise
-        this.clockwise = self.clockwise.clockwise
-        self.clockwise.clockwise.ccw = this
-        self.clockwise.clockwise = this
+        this.ccw = second
+        this.clockwise = third
+        second.clockwise = this
+        third.ccw = this
         return this
     
     def removeSeventh(self) :
-        self.ccw.ccw.ccw.ccw.ccw.ccw.ccw.ccw.clockwise = self.ccw.ccw.ccw.ccw.ccw.ccw
-        self.ccw.ccw.ccw.ccw.ccw.ccw.ccw = self.ccw.ccw.ccw.ccw.ccw.ccw.ccw.ccw
-        return self.ccw.ccw.ccw.ccw.ccw.ccw
+        eighth = self.ccw.ccw.ccw.ccw.ccw.ccw.ccw.ccw
+        sixth  = self.ccw.ccw.ccw.ccw.ccw.ccw
+        
+        eighth.clockwise = sixth
+        sixth.ccw = eigth
+        return sixth
     
     def debug(self) :
         print("[",end='')
