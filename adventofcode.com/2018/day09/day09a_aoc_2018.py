@@ -1,66 +1,54 @@
-text = input()
+def solve_day09a_aoc_2018(text) :
+    players,_,_,_,_,_,points,_ = text.split()
+    players = int(players)
+    points = int(points)
 
-players,_,_,_,_,_,points,_ = text.split()
-players = int(players)
-points = int(points)
+    class Node :
+        def __init__(self, number) :
+            self.number = number
+            self.clockwise = self
+            self.ccw = self
 
-class Node :
-    def __init__(self, number) :
-        self.number = number
-        self.clockwise = self
-        self.ccw = self
-        
-    def place(self, number) :
-        second = self.clockwise
-        third = self.clockwise.clockwise
-        
-        this = Node(number)
-        this.ccw = second
-        this.clockwise = third
-        second.clockwise = this
-        third.ccw = this
-        return this
-    
-    def removeSeventh(self) :
-        eighth = self.ccw.ccw.ccw.ccw.ccw.ccw.ccw.ccw
-        sixth  = self.ccw.ccw.ccw.ccw.ccw.ccw
-        
-        eighth.clockwise = sixth
-        sixth.ccw = eigth
-        return sixth
-    
-    def debug(self) :
-        print("[",end='')
-        print(self.number,end='')
-        this = self.clockwise
-        while this != self :
-            print(',',this.number,end='')
-            this = this.clockwise
-        print("]")
-        
-        
-from itertools import cycle
-from itertools import chain
+        def place(self, number) :
+            second = self.clockwise
+            third = self.clockwise.clockwise
 
-scores = [0] * players
+            this = Node(number)
+            this.ccw = second
+            this.clockwise = third
+            second.clockwise = this
+            third.ccw = this
+            return this
 
-marbles = range(points+1).__iter__()
-lowest = marbles.__next__()
-circle = Node(lowest)
-lowest = marbles.__next__()
+        def removeSeventh(self) :
+            eighth = self.ccw.ccw.ccw.ccw.ccw.ccw.ccw.ccw
+            sixth  = self.ccw.ccw.ccw.ccw.ccw.ccw
 
-for pp in cycle(range(players)) :
-    if lowest % 23 == 0 :
-        scores[pp] += lowest
-        valueOfSeventh = circle.ccw.ccw.ccw.ccw.ccw.ccw.ccw.number
-        scores[pp] += valueOfSeventh
-        #marbles = chain([valueOfSeventh],marbles)
-        circle = circle.removeSeventh()
-    else :
-        circle = circle.place(lowest)
-    if lowest == points :
-        break
+            eighth.clockwise = sixth
+            sixth.ccw = eighth
+            return sixth
+
+    from itertools import cycle
+    from itertools import chain
+
+    scores = [0] * players
+
+    marbles = range(points+1).__iter__()
     lowest = marbles.__next__()
-    #circle.debug()
+    circle = Node(lowest)
+    lowest = marbles.__next__()
 
-print(max(scores))
+    for pp in cycle(range(players)) :
+        if lowest % 23 == 0 :
+            scores[pp] += lowest
+            valueOfSeventh = circle.ccw.ccw.ccw.ccw.ccw.ccw.ccw.number
+            scores[pp] += valueOfSeventh
+            circle = circle.removeSeventh()
+        else :
+            circle = circle.place(lowest)
+        if lowest == points :
+            break
+        lowest = marbles.__next__()
+
+    return max(scores)
+
